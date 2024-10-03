@@ -1,8 +1,8 @@
 package emailSender
 
 import (
+	"github.com/KotFed0t/notification_service/config"
 	"gopkg.in/gomail.v2"
-	"notification_service/config"
 )
 
 type EmailSender struct {

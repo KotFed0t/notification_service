@@ -3,8 +3,8 @@ package notificationProducer
 import (
 	"context"
 	"encoding/json"
+	"github.com/KotFed0t/notification_service/pkg/notificationProducer/model"
 	"github.com/segmentio/kafka-go"
-	"notification_service/pkg/notificationProducer/model"
 )
 
 type NotificationProducer struct {

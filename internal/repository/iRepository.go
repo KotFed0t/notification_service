@@ -2,7 +2,7 @@ package repository
 
 import (
 	"context"
-	"notification_service/internal/model"
+	"github.com/KotFed0t/notification_service/internal/model"
 )
 
 type IRepository interface {

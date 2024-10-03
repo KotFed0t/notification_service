@@ -2,7 +2,7 @@ package notificationProducer
 
 import (
 	"context"
-	"notification_service/pkg/notificationProducer/model"
+	"github.com/KotFed0t/notification_service/pkg/notificationProducer/model"
 )
 
 type INotificationProducer interface {

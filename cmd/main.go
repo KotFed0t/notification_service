@@ -1,16 +1,13 @@
 package main
 
 import (
-	"context"
+	"github.com/KotFed0t/notification_service/config"
+	"github.com/KotFed0t/notification_service/data/db/postgres"
+	"github.com/KotFed0t/notification_service/data/queue/kafka/notificationConsumer"
+	"github.com/KotFed0t/notification_service/internal/notification/emailSender"
+	"github.com/KotFed0t/notification_service/internal/repository"
+	"github.com/KotFed0t/notification_service/internal/service/notificationService"
 	"log/slog"
-	"notification_service/config"
-	"notification_service/data/db/postgres"
-	"notification_service/data/queue/kafka/notificationConsumer"
-	"notification_service/internal/notification/emailSender"
-	"notification_service/internal/repository"
-	"notification_service/internal/service/notificationService"
-	"notification_service/pkg/notificationProducer"
-	"notification_service/pkg/notificationProducer/model"
 	"os"
 	"os/signal"
 	"syscall"
@@ -49,20 +46,6 @@ func main() {
 	notifConsumer := notificationConsumer.New(cfg, notificationSrv)
 	go notifConsumer.Consume()
 
-	notifProducer := notificationProducer.New(cfg.KafkaNotification.ConsumerUrl, cfg.KafkaNotification.Topic)
-
-	err := notifProducer.Send(context.Background(), "", model.NotificationMessage{
-		Email:        "Slayvi555@gmail.com",
-		Subject:      "test5",
-		TemplateName: "test",
-		Parameters: map[string]string{
-			"Name": "Слава",
-		},
-	})
-	if err != nil {
-		slog.Error("got error from notifProducer.Send", slog.Any("err", err))
-	}
-
 	// Waiting interruption signal
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
@@ -70,7 +53,7 @@ func main() {
 	s := <-interrupt
 	slog.Info("got interruption signal: " + s.String())
 	notifConsumer.Close()
-	err = postgresDb.Close()
+	err := postgresDb.Close()
 	if err != nil {
 		slog.Error("got error on postgresDb.Close()", slog.Any("err", err))
 	}

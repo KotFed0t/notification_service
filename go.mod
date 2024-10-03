@@ -1,4 +1,4 @@
-module notification_service
+module github.com/KotFed0t/notification_service
 
 go 1.21
 

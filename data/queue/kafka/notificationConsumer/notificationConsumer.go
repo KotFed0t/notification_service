@@ -4,13 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"github.com/KotFed0t/notification_service/config"
+	"github.com/KotFed0t/notification_service/internal/service/serviceInterface"
+	"github.com/KotFed0t/notification_service/internal/utils"
+	"github.com/KotFed0t/notification_service/pkg/notificationProducer/model"
 	"github.com/segmentio/kafka-go"
 	"io"
 	"log/slog"
-	"notification_service/config"
-	"notification_service/internal/service/serviceInterface"
-	"notification_service/internal/utils"
-	"notification_service/pkg/notificationProducer/model"
 )
 
 type NotificationConsumer struct {

@@ -4,10 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"github.com/KotFed0t/notification_service/internal/model"
+	"github.com/KotFed0t/notification_service/internal/utils"
 	"github.com/jmoiron/sqlx"
 	"log/slog"
-	"notification_service/internal/model"
-	"notification_service/internal/utils"
 )
 
 type PostgresRepo struct {

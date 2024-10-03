@@ -2,8 +2,8 @@ package postgres
 
 import (
 	"fmt"
+	"github.com/KotFed0t/notification_service/config"
 	"log/slog"
-	"notification_service/config"
 	"time"
 
 	_ "github.com/jackc/pgx/stdlib" // pgx driver
