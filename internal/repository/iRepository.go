@@ -7,5 +7,5 @@ import (
 
 type IRepository interface {
 	GetTemplate(ctx context.Context, templateName string) (model.NotificationTemplate, error)
-	InsertIntoHistory(ctx context.Context, email, text, status, errorMessage string) error
+	InsertIntoHistory(ctx context.Context, email, templateName, text, status, errorMessage string) error
 }

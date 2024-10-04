@@ -49,14 +49,14 @@ func (r *PostgresRepo) GetTemplate(ctx context.Context, templateName string) (
 
 func (r *PostgresRepo) InsertIntoHistory(
 	ctx context.Context,
-	email, text, status, errorMessage string,
+	email, templateName, text, status, errorMessage string,
 ) error {
-	query := `INSERT INTO notification_history(email, text, status, error_message) VALUES ($1, $2, $3, $4);`
+	query := `INSERT INTO notification_history(email, template_name, text, status, error_message) VALUES ($1, $2, $3, $4, $5);`
 
 	rqId := utils.GetRequestIdFromCtx(ctx)
 	slog.Info("InsertIntoHistory start", slog.String("rqId", rqId))
 
-	_, err := r.db.ExecContext(ctx, query, email, text, status, errorMessage)
+	_, err := r.db.ExecContext(ctx, query, email, templateName, text, status, errorMessage)
 	if err != nil {
 		slog.Error("InsertIntoHistory error", slog.String("rqId", rqId))
 		return err

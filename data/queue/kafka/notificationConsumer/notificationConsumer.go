@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/KotFed0t/notification_service/config"
+	"github.com/KotFed0t/notification_service/internal/model"
 	"github.com/KotFed0t/notification_service/internal/service/serviceInterface"
 	"github.com/KotFed0t/notification_service/internal/utils"
-	"github.com/KotFed0t/notification_service/pkg/notificationProducer/model"
 	"github.com/segmentio/kafka-go"
 	"io"
 	"log/slog"
@@ -46,6 +46,7 @@ func (c *NotificationConsumer) Consume() {
 			}
 			slog.Error("error while ReadMessage from kafka notification", slog.Any("error", err))
 		}
+
 		go c.handleMessage(m)
 	}
 }

@@ -52,7 +52,9 @@ func main() {
 
 	s := <-interrupt
 	slog.Info("got interruption signal: " + s.String())
+
 	notifConsumer.Close()
+
 	err := postgresDb.Close()
 	if err != nil {
 		slog.Error("got error on postgresDb.Close()", slog.Any("err", err))

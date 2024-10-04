@@ -2,7 +2,7 @@ package serviceInterface
 
 import (
 	"context"
-	"github.com/KotFed0t/notification_service/pkg/notificationProducer/model"
+	"github.com/KotFed0t/notification_service/internal/model"
 )
 
 type INotificationService interface {

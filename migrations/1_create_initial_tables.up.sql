@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS templates (
 CREATE TABLE IF NOT EXISTS notification_history (
     id BIGSERIAL PRIMARY KEY,
     email VARCHAR(255),
+    template_name VARCHAR(255),
     text TEXT,
     status VARCHAR(255),
     error_message TEXT

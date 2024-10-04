@@ -10,7 +10,6 @@ import (
 	"github.com/KotFed0t/notification_service/internal/repository"
 	"github.com/KotFed0t/notification_service/internal/repository/notificationHistoryStatus"
 	"github.com/KotFed0t/notification_service/internal/utils"
-	model2 "github.com/KotFed0t/notification_service/pkg/notificationProducer/model"
 	"log/slog"
 	"regexp"
 	"strings"
@@ -27,7 +26,7 @@ func New(repo repository.IRepository, cfg *config.Config, emailSender emailSende
 	return &NotificationService{repo: repo, cfg: cfg, emailSender: emailSender}
 }
 
-func (s *NotificationService) Process(ctx context.Context, msg model2.NotificationMessage) error {
+func (s *NotificationService) Process(ctx context.Context, msg model.NotificationMessage) error {
 	// первично валидируем emailSender и templateName
 	rqId := utils.GetRequestIdFromCtx(ctx)
 	slog.Info("start process notification", slog.String("rqId", rqId), slog.Any("msg", msg))
@@ -60,19 +59,19 @@ func (s *NotificationService) Process(ctx context.Context, msg model2.Notificati
 	// отправляем email и записываем результат в БД
 	err = s.emailSender.Send(msg.Email, msg.Subject, renderedTmpl)
 	if err != nil {
-		_ = s.saveIntoHistory(ctx, msg.Email, renderedTmpl, notificationHistoryStatus.FAILED, err.Error())
+		_ = s.saveIntoHistory(ctx, msg.Email, msg.TemplateName, renderedTmpl, notificationHistoryStatus.FAILED, err.Error())
 		return fmt.Errorf("failed on send email: %w", err)
 	}
 
-	_ = s.saveIntoHistory(ctx, msg.Email, renderedTmpl, notificationHistoryStatus.SUCCESS, "")
+	_ = s.saveIntoHistory(ctx, msg.Email, msg.TemplateName, renderedTmpl, notificationHistoryStatus.SUCCESS, "")
 	return nil
 }
 
 func (s *NotificationService) saveIntoHistory(
 	ctx context.Context,
-	email, text, status, errMsg string,
+	email, templateName, text, status, errMsg string,
 ) error {
-	err := s.repo.InsertIntoHistory(ctx, email, text, status, errMsg)
+	err := s.repo.InsertIntoHistory(ctx, email, templateName, text, status, errMsg)
 	if err != nil {
 		rqId := utils.GetRequestIdFromCtx(ctx)
 		slog.Error(
@@ -85,7 +84,7 @@ func (s *NotificationService) saveIntoHistory(
 	return nil
 }
 
-func (s *NotificationService) validateEmailAndTemplateName(ctx context.Context, msg model2.NotificationMessage) error {
+func (s *NotificationService) validateEmailAndTemplateName(ctx context.Context, msg model.NotificationMessage) error {
 	if msg.TemplateName == "" {
 		return errors.New("template name is empty")
 	}
@@ -101,7 +100,7 @@ func (s *NotificationService) validateEmailAndTemplateName(ctx context.Context, 
 
 func (s *NotificationService) validateRequiredParams(
 	ctx context.Context,
-	msg model2.NotificationMessage,
+	msg model.NotificationMessage,
 	notifTemplate model.NotificationTemplate,
 ) error {
 	for _, param := range notifTemplate.RequiredParameters {
@@ -118,7 +117,7 @@ func (s *NotificationService) validateRequiredParams(
 
 func (s *NotificationService) renderTemplate(
 	ctx context.Context,
-	msg model2.NotificationMessage,
+	msg model.NotificationMessage,
 	notifTemplate model.NotificationTemplate,
 ) (string, error) {
 	t, err := template.New("").Parse(notifTemplate.TemplateContent)
